@@ -3,15 +3,20 @@
 <lccdd>
 
     <define>
-        <constant name = "ECALWidth" value = "229.2*mm" />
-        <constant name = "ECALHeight" value = "229.2*mm" />
-        <constant name = "ECALLayerDepth" value = "3*mm" />
-        <constant name = "NLayersECAL" value = "150" />
+        <constant name="ECALWidth" value="229.2*mm" />
+        <constant name="ECALHeight" value="229.2*mm" />
+        <constant name="ECALLayerDepth" value="3.0*mm" />
+        <constant name="NLayersECAL" value="150" />
+
+        <constant name="ECALPosX" value="0.0*mm" />
+        <constant name="ECALPosY" value="0.0*mm" />
+        <constant name="ECALPosZ" value="0.0*mm" />
     </define>
 
     <detectors>
         <detector id="NA64Ecal:ID" name="NA64Ecal" type="NA64ECal_base" readout="NA64EcalHits" vis="NA64Ecal">
-            <position x="0.0*mm" y="0.0*mm" z="0.0*mm"/>
+            <dimensions x="ECALWidth" y="ECALHeight" z="ECALLayerDepth*NLayersECAL"/>
+            <position x="ECALPosX" y="ECALPosY" z="ECALPosZ"/>
         </detector>
     </detectors>
 
