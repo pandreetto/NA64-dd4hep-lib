@@ -2,8 +2,16 @@
 
 <lccdd>
 
+    <define>
+        <constant name="world_side"   value="20*m"/>
+        <constant name="world_x"      value="world_side/2"/>
+        <constant name="world_y"      value="world_side/2"/>
+        <constant name="world_z"      value="world_side/2"/>
+    </define>
+
     <includes>
-        <file ref="materials.xml" />
+        <gdmlFile ref="elements.xml"/>
+        <gdmlFile ref="materials.xml" />
         <file ref="NA64ECAL_base.xml" />
     </includes>
 
