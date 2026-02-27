@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='utf-8'?>
+
+<lccdd>
+
+    <define>
+        <constant name = "ECALWidth" value = "229.2*mm" />
+        <constant name = "ECALHeight" value = "229.2*mm" />
+        <constant name = "ECALLayerDepth" value = "3*mm" />
+        <constant name = "NLayersECAL" value = "150" />
+    </define>
+
+    <detectors>
+        <detector id="NA64Ecal:ID" name="NA64Ecal" type="NA64ECal_base" readout="NA64EcalHits" vis="NA64Ecal">
+            <position x="0.0*mm" y="0.0*mm" z="0.0*mm"/>
+        </detector>
+    </detectors>
+
+    <readouts>
+        <readout name="NA64EcalHits">
+        <id>TBD</id>
+        </readout>
+    </readouts>
+
+</lccdd>

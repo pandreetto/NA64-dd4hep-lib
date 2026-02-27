@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='utf-8'?>
+
+<lccdd>
+
+    <includes>
+        <file ref="materials.xml" />
+        <file ref="NA64ECAL_base.xml" />
+    </includes>
+
+</lccdd>
