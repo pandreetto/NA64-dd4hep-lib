@@ -15,4 +15,12 @@
         <fraction n="0.012" ref="Ar"/>
     </material>
 
+    <material formula="CaloSc" name="Calo scintillator" state="solid" >
+        <RL type="X0" unit="cm" value="42.4" />
+        <NIL type="lambda" unit="cm" value="79.46" />
+        <D type="density" unit="g/cm3" value="1.032" />
+        <composite n="8" ref="H" />
+        <composite n="8" ref="C" />
+    </material>
+
 </materials>
