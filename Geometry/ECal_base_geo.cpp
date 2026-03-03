@@ -26,6 +26,7 @@ static Ref_t create_element(Detector& theDetector, xml_h xml_ent, SensitiveDetec
     const int cellNumX = theDetector.constant<int>("CellNumX");
     const int cellNumY = theDetector.constant<int>("CellNumY");
     const double converterDepth = theDetector.constant<double>("ConverterDepth");
+    const double holeRadius = theDetector.constant<double>("HoleRadius");
 
     const double LayerDepth = ECaloDepth / numberOfLayers;
     const double CellSizeX = ECaloWidth / cellNumX;
@@ -36,6 +37,8 @@ static Ref_t create_element(Detector& theDetector, xml_h xml_ent, SensitiveDetec
     {
         // TODO missing error handling
     }
+    const double holeDX = CellSizeX / 4;
+    const double holeDY = CellSizeY / 4;
 
     Box ECaloBox { ECaloWidth / 2., ECaloHeight / 2., ECaloDepth / 2. };
     Volume ECaloVol { "ECalVol", ECaloBox, theDetector.material("Air") };
@@ -65,7 +68,13 @@ static Ref_t create_element(Detector& theDetector, xml_h xml_ent, SensitiveDetec
     auto conv_material = x_caloconv.attr<std::string>(_Unicode(material));
 
     Box convBox { CellSizeX / 2, CellSizeY / 2, converterDepth / 2 };
-    Volume convVol { "ConverterVol", convBox, theDetector.material(conv_material) };
+    Tube convHole { 0.0, holeRadius, converterDepth / 2 + 1.0 * mm };
+    SubtractionSolid cSolid1 { convBox, convHole, Position(holeDX, holeDY, 0.0)};
+    SubtractionSolid cSolid2 { cSolid1, convHole, Position(holeDX, -holeDY, 0.0)};
+    SubtractionSolid cSolid3 { cSolid2, convHole, Position(-holeDX, holeDY, 0.0)};
+    SubtractionSolid cSolid4 { cSolid3, convHole, Position(-holeDX, -holeDY, 0.0)};
+
+    Volume convVol { "ConverterVol", cSolid4, theDetector.material(conv_material) };
     convVol.setVisAttributes(theDetector, x_caloconv.visStr());
 
     auto conv_pos = Position(0.0, 0.0, -0.5 * LayerDepth + 0.5 * converterDepth);
@@ -78,11 +87,39 @@ static Ref_t create_element(Detector& theDetector, xml_h xml_ent, SensitiveDetec
     auto sc_material = x_calosc.attr<std::string>(_Unicode(material));
 
     Box scBox { CellSizeX / 2, CellSizeY / 2, converterDepth / 2 };
-    Volume scVol { "CounterVol", scBox, theDetector.material(sc_material) };
-    convVol.setVisAttributes(theDetector, x_calosc.visStr());
+    Tube scHole { 0.0, holeRadius, converterDepth / 2 + 1.0 * mm };
+    SubtractionSolid sSolid1 { scBox, scHole, Position(holeDX, holeDY, 0.0)};
+    SubtractionSolid sSolid2 { sSolid1, scHole, Position(holeDX, -holeDY, 0.0)};
+    SubtractionSolid sSolid3 { sSolid2, scHole, Position(-holeDX, holeDY, 0.0)};
+    SubtractionSolid sSolid4 { sSolid3, scHole, Position(-holeDX, -holeDY, 0.0)};
+
+    Volume scVol { "CounterVol", sSolid4, theDetector.material(sc_material) };
+    scVol.setVisAttributes(theDetector, x_calosc.visStr());
 
     auto sc_pos = Position(0.0, 0.0, 0.5 * LayerDepth - 0.5 * counterDepth);
     cellVol.placeVolume(scVol, 1, sc_pos);
+
+    /* *********************************************************************
+     * Iron rods
+     * ********************************************************************* */
+    xml_det_t x_rod = x_det.child(_Unicode(rod));
+    auto rod_material = x_rod.attr<std::string>(_Unicode(material));
+
+    Tube rodTube { 0.0, holeRadius, converterDepth / 2 };
+    Volume rodVol { "RodVol", rodTube, theDetector.material(rod_material) };
+    rodVol.setVisAttributes(theDetector, x_rod.visStr());
+
+    auto rc_posz = -0.5 * LayerDepth + 0.5 * converterDepth;
+    cellVol.placeVolume(rodVol, 1, Position(holeDX, holeDY, rc_posz));
+    cellVol.placeVolume(rodVol, 1, Position(holeDX, -holeDY, rc_posz));
+    cellVol.placeVolume(rodVol, 1, Position(-holeDX, holeDY, rc_posz));
+    cellVol.placeVolume(rodVol, 1, Position(-holeDX, -holeDY, rc_posz));
+
+    auto sc_posz = 0.5 * LayerDepth - 0.5 * counterDepth;
+    cellVol.placeVolume(rodVol, 1, Position(holeDX, holeDY, sc_posz));
+    cellVol.placeVolume(rodVol, 1, Position(holeDX, -holeDY, sc_posz));
+    cellVol.placeVolume(rodVol, 1, Position(-holeDX, holeDY, sc_posz));
+    cellVol.placeVolume(rodVol, 1, Position(-holeDX, -holeDY, sc_posz));
 
     /* *********************************************************************
      * Layers

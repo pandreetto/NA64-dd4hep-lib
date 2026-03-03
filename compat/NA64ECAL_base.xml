@@ -3,20 +3,21 @@
 <lccdd>
 
     <define>
-        <constant name="ECALWidth" value="229.2*mm" />
-        <constant name="ECALHeight" value="229.2*mm" />
+        <constant name="ECALWidth" value="200.0*mm" />
+        <constant name="ECALHeight" value="200.0*mm" />
         <constant name="ECALDepth" value="150.0*mm" />
         <constant name="ECALStart" value="0.0*mm" />
 
-        <constant name="NLayersECAL" value="50" />
-        <constant name="CellNumX" value="6" />
-        <constant name="CellNumY" value="6" />
+        <constant name="NLayersECAL" value="3" />
+        <constant name="CellNumX" value="2" />
+        <constant name="CellNumY" value="2" />
         
         <constant name="ECALPosX" value="0.0*mm" />
         <constant name="ECALPosY" value="0.0*mm" />
         <constant name="ECALPosZ" value="ECALStart + 0.5*ECALDepth" />
 
-        <constant name="ConverterDepth" value="1.5*mm" />
+        <constant name="ConverterDepth" value="25.0*mm" />
+        <constant name="HoleRadius" value="5.0*mm" />
 
     </define>
 
@@ -24,6 +25,7 @@
         <vis name="DefaultVis" alpha="1.0" r="0.0" g="0.0" b="0.0" showDaughters="true" visible="false"/>
         <vis name="ConverterVis" alpha="1.0" r="1.0" g="0.0" b="0.0" showDaughters="true" visible="true"/>
         <vis name="CounterVis" alpha="1.0" r="0.0" g="1.0" b="0.0" showDaughters="true" visible="true"/>
+        <vis name="RodVis" alpha="1.0" r="0.0" g="0.0" b="1.0" showDaughters="true" visible="true"/>
     </display>
 
     <detectors>
@@ -32,6 +34,7 @@
             <position x="ECALPosX" y="ECALPosY" z="ECALPosZ" />
             <caloConverter material="Pb" vis="ConverterVis" />
             <caloCounter material="CaloSc" vis="CounterVis" />
+            <rod material="Iron" vis="RodVis" />
         </detector>
     </detectors>
 
