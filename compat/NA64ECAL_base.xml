@@ -33,7 +33,7 @@
             <dimensions x="ECALWidth" y="ECALHeight" z="ECALDepth" />
             <position x="ECALPosX" y="ECALPosY" z="ECALPosZ" />
             <caloConverter material="Pb" vis="ConverterVis" />
-            <caloCounter material="CaloSc" vis="CounterVis" />
+            <caloCounter sensitive="true" material="CaloSc" vis="CounterVis" />
             <rod material="Iron" vis="RodVis" />
         </detector>
     </detectors>

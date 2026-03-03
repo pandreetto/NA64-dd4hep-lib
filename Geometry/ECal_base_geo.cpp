@@ -95,6 +95,7 @@ static Ref_t create_element(Detector& theDetector, xml_h xml_ent, SensitiveDetec
 
     Volume scVol { "CounterVol", sSolid4, theDetector.material(sc_material) };
     scVol.setVisAttributes(theDetector, x_calosc.visStr());
+    if (x_calosc.isSensitive()) scVol.setSensitiveDetector(sens_det);
 
     auto sc_pos = Position(0.0, 0.0, 0.5 * LayerDepth - 0.5 * counterDepth);
     cellVol.placeVolume(scVol, 1, sc_pos);
