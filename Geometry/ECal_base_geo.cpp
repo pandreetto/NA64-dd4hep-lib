@@ -130,18 +130,18 @@ static Ref_t create_element(Detector& theDetector, xml_h xml_ent, SensitiveDetec
         PlacedVolume layerPlaced = ECaloVol.placeVolume(layerVol, k,
             Position(0., 0., -ECaloDepth / 2. + LayerDepth / 2. + k * LayerDepth));
         layerPlaced.addPhysVolID("layerid", k);
+    }
 
-        for (int j = 0; j < cellNumX; j++)
+    for (int j = 0; j < cellNumX; j++)
+    {
+        for (int h = 0; h < cellNumY; h++)
         {
-            for (int h = 0; h < cellNumY; h++)
-            {
-                auto cell_pos = Position(-ECaloWidth / 2. + CellSizeX / 2 + j * CellSizeX,
-                    -ECaloHeight / 2. + CellSizeY / 2 + h * CellSizeY, 0);
-                int cell_idx = (k * cellNumX + j) * cellNumY + h;
+            auto cell_pos = Position(-ECaloWidth / 2. + CellSizeX / 2 + j * CellSizeX,
+                -ECaloHeight / 2. + CellSizeY / 2 + h * CellSizeY, 0);
+            int cell_idx = j * cellNumY + h;
 
-                PlacedVolume cellPlaced = layerVol.placeVolume(cellVol, cell_idx, cell_pos);
-                cellPlaced.addPhysVolID("cellid", cell_idx);
-            }
+            PlacedVolume cellPlaced = layerVol.placeVolume(cellVol, cell_idx, cell_pos);
+            cellPlaced.addPhysVolID("cellid", cell_idx);
         }
     }
 
