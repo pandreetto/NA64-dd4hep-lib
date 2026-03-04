@@ -19,6 +19,8 @@
         <constant name="ConverterDepth" value="25.0*mm" />
         <constant name="HoleRadius" value="5.0*mm" />
 
+        <constant name="ECALCellSizeX"  value="ECALWidth/CellNumX" />
+        <constant name="ECALCellSizeY"  value="ECALHeight/CellNumY" />
     </define>
 
     <display>
@@ -40,7 +42,8 @@
 
     <readouts>
         <readout name="NA64EcalHits">
-        <id>layer:5,cell:5,x:-10,y:-10</id>
+            <segmentation type="CartesianGridXY" grid_size_x="ECALCellSizeX" grid_size_y="ECALCellSizeY" />
+            <id>layerid:6,cellid:6,x:-10,y:-10</id>
         </readout>
     </readouts>
 

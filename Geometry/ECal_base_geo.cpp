@@ -112,15 +112,15 @@ static Ref_t create_element(Detector& theDetector, xml_h xml_ent, SensitiveDetec
 
     auto rc_posz = -0.5 * LayerDepth + 0.5 * converterDepth;
     cellVol.placeVolume(rodVol, 1, Position(holeDX, holeDY, rc_posz));
-    cellVol.placeVolume(rodVol, 1, Position(holeDX, -holeDY, rc_posz));
-    cellVol.placeVolume(rodVol, 1, Position(-holeDX, holeDY, rc_posz));
-    cellVol.placeVolume(rodVol, 1, Position(-holeDX, -holeDY, rc_posz));
+    cellVol.placeVolume(rodVol, 2, Position(holeDX, -holeDY, rc_posz));
+    cellVol.placeVolume(rodVol, 3, Position(-holeDX, holeDY, rc_posz));
+    cellVol.placeVolume(rodVol, 4, Position(-holeDX, -holeDY, rc_posz));
 
     auto sc_posz = 0.5 * LayerDepth - 0.5 * counterDepth;
-    cellVol.placeVolume(rodVol, 1, Position(holeDX, holeDY, sc_posz));
-    cellVol.placeVolume(rodVol, 1, Position(holeDX, -holeDY, sc_posz));
-    cellVol.placeVolume(rodVol, 1, Position(-holeDX, holeDY, sc_posz));
-    cellVol.placeVolume(rodVol, 1, Position(-holeDX, -holeDY, sc_posz));
+    cellVol.placeVolume(rodVol, 5, Position(holeDX, holeDY, sc_posz));
+    cellVol.placeVolume(rodVol, 6, Position(holeDX, -holeDY, sc_posz));
+    cellVol.placeVolume(rodVol, 7, Position(-holeDX, holeDY, sc_posz));
+    cellVol.placeVolume(rodVol, 8, Position(-holeDX, -holeDY, sc_posz));
 
     /* *********************************************************************
      * Layers
@@ -129,7 +129,7 @@ static Ref_t create_element(Detector& theDetector, xml_h xml_ent, SensitiveDetec
     {
         PlacedVolume layerPlaced = ECaloVol.placeVolume(layerVol, k,
             Position(0., 0., -ECaloDepth / 2. + LayerDepth / 2. + k * LayerDepth));
-        layerPlaced.addPhysVolID("layer", k);
+        layerPlaced.addPhysVolID("layerid", k);
 
         for (int j = 0; j < cellNumX; j++)
         {
@@ -140,7 +140,7 @@ static Ref_t create_element(Detector& theDetector, xml_h xml_ent, SensitiveDetec
                 int cell_idx = (k * cellNumX + j) * cellNumY + h;
 
                 PlacedVolume cellPlaced = layerVol.placeVolume(cellVol, cell_idx, cell_pos);
-                cellPlaced.addPhysVolID("cell", cell_idx);
+                cellPlaced.addPhysVolID("cellid", cell_idx);
             }
         }
     }
