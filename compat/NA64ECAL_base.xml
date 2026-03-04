@@ -42,8 +42,8 @@
 
     <readouts>
         <readout name="NA64EcalHits">
-            <segmentation type="CartesianGridXY" grid_size_x="ECALCellSizeX" grid_size_y="ECALCellSizeY" />
-            <id>layerid:6,cellid:6,x:-10,y:-10</id>
+            <segmentation type="NoSegmentation" />
+            <id>layerid:14,cellid:14,modid:2</id>
         </readout>
     </readouts>
 

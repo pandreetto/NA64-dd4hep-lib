@@ -78,7 +78,8 @@ static Ref_t create_element(Detector& theDetector, xml_h xml_ent, SensitiveDetec
     convVol.setVisAttributes(theDetector, x_caloconv.visStr());
 
     auto conv_pos = Position(0.0, 0.0, -0.5 * LayerDepth + 0.5 * converterDepth);
-    cellVol.placeVolume(convVol, 1, conv_pos);
+    PlacedVolume convPlaced = cellVol.placeVolume(convVol, 1, conv_pos);
+    convPlaced.addPhysVolID("modid", 0);
 
     /* *********************************************************************
      * ECAL counter
@@ -98,7 +99,8 @@ static Ref_t create_element(Detector& theDetector, xml_h xml_ent, SensitiveDetec
     if (x_calosc.isSensitive()) scVol.setSensitiveDetector(sens_det);
 
     auto sc_pos = Position(0.0, 0.0, 0.5 * LayerDepth - 0.5 * counterDepth);
-    cellVol.placeVolume(scVol, 1, sc_pos);
+    PlacedVolume scPlaced = cellVol.placeVolume(scVol, 1, sc_pos);
+    scPlaced.addPhysVolID("modid", 1);
 
     /* *********************************************************************
      * Iron rods
