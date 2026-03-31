@@ -28,6 +28,7 @@
         <vis name="ConverterVis" alpha="1.0" r="1.0" g="0.0" b="0.0" showDaughters="true" visible="true"/>
         <vis name="CounterVis" alpha="1.0" r="0.0" g="1.0" b="0.0" showDaughters="true" visible="true"/>
         <vis name="RodVis" alpha="1.0" r="0.0" g="0.0" b="1.0" showDaughters="true" visible="true"/>
+        <vis name="CoverVis" alpha="1.0" r="0.4" g="0.4" b="0.3" showDaughters="true" visible="true"/>
     </display>
 
     <detectors>

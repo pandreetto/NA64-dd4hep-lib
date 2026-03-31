@@ -49,10 +49,6 @@ static Ref_t create_element(Detector& theDetector, xml_h xml_ent, SensitiveDetec
     PlacedVolume ECaloPlaced = motherVolume.placeVolume(ECaloVol, calo_pos);
     subdet.setPlacement(ECaloPlaced);
 
-//    Box FaceBox { ECaloWidth / 2, ECaloHeight / 2, FaceThickness / 2 };
-//    Volume FaceVol { "ECALScreenZVol", FaceBox, theDetector.material("Al") };
-//    motherVolume.placeVolume(FaceVol, Position(ECaloX, ECaloY, ECaloZ + FaceThickness));
-
     Box layerBox { ECaloWidth / 2., ECaloHeight / 2., LayerDepth / 2 };
     Volume layerVol { "ECalLayerVol", layerBox, theDetector.material("Air") };
     layerVol.setVisAttributes(theDetector, "DefaultVis");
@@ -60,6 +56,14 @@ static Ref_t create_element(Detector& theDetector, xml_h xml_ent, SensitiveDetec
     Box cellBox { CellSizeX / 2, CellSizeY / 2, LayerDepth / 2 };
     Volume cellVol { "ECalCellVol", cellBox, theDetector.material("Air") };
     cellVol.setVisAttributes(theDetector, "DefaultVis");
+
+    /* *********************************************************************
+     * Cover of ECAL fibers
+     * ********************************************************************* */
+    Box CoverBox { ECaloWidth / 2, ECaloHeight / 2, FaceThickness / 2 };
+    Volume CoverVol { "ECALScreenZVol", CoverBox, theDetector.material("Al") };
+    CoverVol.setVisAttributes(theDetector, "CoverVis");
+    motherVolume.placeVolume(CoverVol, Position(ECaloX, ECaloY, ECaloZ + FaceThickness / 2));
 
     /* *********************************************************************
      * ECAL converter
