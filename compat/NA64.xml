@@ -12,7 +12,8 @@
     <includes>
         <gdmlFile ref="elements.xml"/>
         <gdmlFile ref="materials.xml" />
-        <file ref="NA64ECAL_base.xml" />
     </includes>
+    <include ref="NA64ECAL_base.xml" />
+    <include ref="NA64HCAL_base.xml" />
 
 </lccdd>

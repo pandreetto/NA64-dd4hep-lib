@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
 
 project(NA64-dd4hep-plugins)
 
-option(INSTALL_COMPACT_FILES "Copy compact files to install area" OFF)
+option(INSTALL_COMPACT_FILES "Copy compact files to install area" ON)
 
 find_package(Geant4 REQUIRED)
 find_package(DD4hep REQUIRED COMPONENTS DDG4)

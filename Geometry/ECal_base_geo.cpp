@@ -10,23 +10,21 @@ static Ref_t create_element(Detector& theDetector, xml_h xml_ent, SensitiveDetec
     std::string det_name = x_det.nameStr();
     sens_det.setType( "calorimeter" );
 
-    xml_dim_t calo_dim = x_det.dimensions();
-    const double ECaloWidth = calo_dim.x();
-    const double ECaloHeight = calo_dim.y();
-    const double ECaloDepth = calo_dim.z();
+    const double ECaloWidth = theDetector.constant<double>("ECALWidth");
+    const double ECaloHeight = theDetector.constant<double>("ECALHeight");
+    const double ECaloDepth = theDetector.constant<double>("ECALDepth");
 
-    auto calo_pos = x_det.position();
-    const double ECaloX = calo_pos.x();
-    const double ECaloY = calo_pos.y();
-    const double ECaloZ = calo_pos.z();
+    const double ECaloX = theDetector.constant<double>("ECALPosX");
+    const double ECaloY = theDetector.constant<double>("ECALPosY");
+    const double ECaloZ = theDetector.constant<double>("ECALPosZ");
 
     const double FaceThickness = 1.5 * mm;
     const double ECaloStart = theDetector.constant<double>("ECALStart");
     const int numberOfLayers = theDetector.constant<int>("NLayersECAL");
-    const int cellNumX = theDetector.constant<int>("CellNumX");
-    const int cellNumY = theDetector.constant<int>("CellNumY");
-    const double converterDepth = theDetector.constant<double>("ConverterDepth");
-    const double holeRadius = theDetector.constant<double>("HoleRadius");
+    const int cellNumX = theDetector.constant<int>("ECALCellNumX");
+    const int cellNumY = theDetector.constant<int>("ECALCellNumY");
+    const double converterDepth = theDetector.constant<double>("ECALConverterDepth");
+    const double holeRadius = theDetector.constant<double>("ECALHoleRadius");
 
     const double LayerDepth = ECaloDepth / numberOfLayers;
     const double CellSizeX = ECaloWidth / cellNumX;
@@ -42,28 +40,30 @@ static Ref_t create_element(Detector& theDetector, xml_h xml_ent, SensitiveDetec
 
     Box ECaloBox { ECaloWidth / 2., ECaloHeight / 2., ECaloDepth / 2. };
     Volume ECaloVol { "ECalVol", ECaloBox, theDetector.material("Air") };
-    ECaloVol.setVisAttributes(theDetector, "DefaultVis");
+    ECaloVol.setVisAttributes(theDetector, "ECALDefaultVis");
 
     DetElement subdet(det_name, x_det.id());
-    Volume motherVolume = theDetector.pickMotherVolume(subdet);    
+    Volume motherVolume = theDetector.pickMotherVolume(subdet);
+    auto calo_pos = Position(ECaloX, ECaloY, ECaloZ);
     PlacedVolume ECaloPlaced = motherVolume.placeVolume(ECaloVol, calo_pos);
     subdet.setPlacement(ECaloPlaced);
 
     Box layerBox { ECaloWidth / 2., ECaloHeight / 2., LayerDepth / 2 };
     Volume layerVol { "ECalLayerVol", layerBox, theDetector.material("Air") };
-    layerVol.setVisAttributes(theDetector, "DefaultVis");
+    layerVol.setVisAttributes(theDetector, "ECALDefaultVis");
 
     Box cellBox { CellSizeX / 2, CellSizeY / 2, LayerDepth / 2 };
     Volume cellVol { "ECalCellVol", cellBox, theDetector.material("Air") };
-    cellVol.setVisAttributes(theDetector, "DefaultVis");
+    cellVol.setVisAttributes(theDetector, "ECALDefaultVis");
 
     /* *********************************************************************
      * Cover of ECAL fibers
      * ********************************************************************* */
     Box CoverBox { ECaloWidth / 2, ECaloHeight / 2, FaceThickness / 2 };
     Volume CoverVol { "ECALScreenZVol", CoverBox, theDetector.material("Al") };
-    CoverVol.setVisAttributes(theDetector, "CoverVis");
-    motherVolume.placeVolume(CoverVol, Position(ECaloX, ECaloY, ECaloZ + FaceThickness / 2));
+    CoverVol.setVisAttributes(theDetector, "ECALCoverVis");
+    auto coverPos = Position(ECaloX, ECaloY, ECaloZ + (ECaloDepth + FaceThickness) / 2);
+    motherVolume.placeVolume(CoverVol, coverPos);
 
     /* *********************************************************************
      * ECAL converter
@@ -91,8 +91,8 @@ static Ref_t create_element(Detector& theDetector, xml_h xml_ent, SensitiveDetec
     xml_det_t x_calosc = x_det.child(_Unicode(caloCounter));
     auto sc_material = x_calosc.attr<std::string>(_Unicode(material));
 
-    Box scBox { CellSizeX / 2, CellSizeY / 2, converterDepth / 2 };
-    Tube scHole { 0.0, holeRadius, converterDepth / 2 + 1.0 * mm };
+    Box scBox { CellSizeX / 2, CellSizeY / 2, counterDepth / 2 };
+    Tube scHole { 0.0, holeRadius, counterDepth / 2 + 1.0 * mm };
     SubtractionSolid sSolid1 { scBox, scHole, Position(holeDX, holeDY, 0.0)};
     SubtractionSolid sSolid2 { sSolid1, scHole, Position(holeDX, -holeDY, 0.0)};
     SubtractionSolid sSolid3 { sSolid2, scHole, Position(-holeDX, holeDY, 0.0)};

@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='utf-8'?>
+
+<lccdd>
+
+    <define>
+        <constant name="HCALWidth" value="582.0*mm" />
+        <constant name="HCALHeight" value="576.0*mm" />
+        <constant name="HCALDepth" value="136.0*mm" />
+        <constant name="HCALStart" value="0.0*mm" />
+
+        <constant name="HCALPosX" value="0.0*mm" />
+        <constant name="HCALPosY" value="0.0*mm" />
+        <constant name="HCALPosZ" value="HCALStart + 0.5*HCALDepth" />
+
+        <constant name="NLayersHCAL" value="4" />
+        <constant name="HCALCellNumX" value="2" />
+        <constant name="HCALCellNumY" value="2" />
+
+        <constant name="HCALConverterDepth" value="25.45*mm" />
+        <constant name="HCALCounterDepth" value="4.0*mm" />
+    </define>
+
+    <display>
+        <vis name="HCALDefaultVis" alpha="1.0" r="0.0" g="0.0" b="0.0" showDaughters="true" visible="false"/>
+        <vis name="HCALConverterVis" alpha="1.0" r="1.0" g="0.0" b="0.0" showDaughters="true" visible="true"/>
+        <vis name="HCALConverterShellVis" alpha="1.0" r="0.8" g="0.2" b="0.0" showDaughters="true" visible="true"/>
+        <vis name="HCALCounterVis" alpha="1.0" r="0.0" g="1.0" b="0.0" showDaughters="true" visible="true"/>
+    </display>
+
+    <detectors>
+        <detector id="0" name="NA64Hcal" type="NA64HCal_base" readout="NA64HcalHits">
+            <dimensions x="HCALWidth" y="HCALHeight" z="HCALDepth" />
+            <position x="HCALPosX" y="HCALPosY" z="HCALPosZ" />
+            <caloConverter material="Iron" vis="HCALConverterVis" />
+            <caloConverterShell material="Iron" vis="HCALConverterShellVis" />
+            <caloCounter sensitive="true" material="CaloSc" vis="HCALCounterVis" />
+        </detector>
+    </detectors>
+
+    <readouts>
+        <readout name="NA64HcalHits">
+            <segmentation type="NoSegmentation" />
+            <id>layerid:14,cellid:14</id>
+        </readout>
+    </readouts>
+
+</lccdd>
