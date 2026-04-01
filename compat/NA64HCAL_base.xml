@@ -8,6 +8,9 @@
         <constant name="HCALDepth" value="136.0*mm" />
         <constant name="HCALStart" value="0.0*mm" />
 
+        <constant name="HCALModWidth" value="600.0*mm" />
+        <constant name="HCALModHeight" value="600.0*mm" />
+
         <constant name="HCALPosX" value="0.0*mm" />
         <constant name="HCALPosY" value="0.0*mm" />
         <constant name="HCALPosZ" value="HCALStart + 0.5*HCALDepth" />
@@ -23,8 +26,9 @@
     <display>
         <vis name="HCALDefaultVis" alpha="1.0" r="0.0" g="0.0" b="0.0" showDaughters="true" visible="false"/>
         <vis name="HCALConverterVis" alpha="1.0" r="1.0" g="0.0" b="0.0" showDaughters="true" visible="true"/>
-        <vis name="HCALConverterShellVis" alpha="1.0" r="0.8" g="0.2" b="0.0" showDaughters="true" visible="true"/>
+        <vis name="HCALConverterShellVis" alpha="1.0" r="0.0" g="0.0" b="1.0" showDaughters="true" visible="true"/>
         <vis name="HCALCounterVis" alpha="1.0" r="0.0" g="1.0" b="0.0" showDaughters="true" visible="true"/>
+        <vis name="HCALShieldVis" alpha="0.5" r="0.8" g="0.2" b="0.0" showDaughters="true" visible="true"/>
     </display>
 
     <detectors>
@@ -34,6 +38,7 @@
             <caloConverter material="Iron" vis="HCALConverterVis" />
             <caloConverterShell material="Iron" vis="HCALConverterShellVis" />
             <caloCounter sensitive="true" material="CaloSc" vis="HCALCounterVis" />
+            <caloShield material="Iron" vis="HCALShieldVis" />
         </detector>
     </detectors>
 

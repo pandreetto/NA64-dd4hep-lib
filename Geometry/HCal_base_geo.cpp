@@ -18,6 +18,10 @@ static Ref_t create_element(Detector& theDetector, xml_h xml_ent, SensitiveDetec
     const double HCaloHeight = theDetector.constant<double>("HCALHeight");
     const double HCaloDepth = theDetector.constant<double>("HCALDepth");
 
+    const double HCaloModWidth = theDetector.constant<double>("HCALModWidth");
+    const double HCaloModHeight = theDetector.constant<double>("HCALModHeight");
+
+
     const int numberOfLayers = theDetector.constant<int>("NLayersHCAL");
     const double converterDepth = theDetector.constant<double>("HCALConverterDepth");
     const double counterDepth = theDetector.constant<double>("HCALCounterDepth");
@@ -85,7 +89,7 @@ static Ref_t create_element(Detector& theDetector, xml_h xml_ent, SensitiveDetec
     scVol.setVisAttributes(theDetector, x_calosc.visStr());
 
     auto sc_pos = Position(0.0, 0.0, -0.5 * LayerDepth + converterDepth + 0.5 * counterDepth);
-    PlacedVolume scPlaced = layerVol.placeVolume(convShVol, 1, sc_pos);
+    PlacedVolume scPlaced = layerVol.placeVolume(scVol, 1, sc_pos);
 
     Box cellBox { CellSizeX / 2, CellSizeY / 2, counterDepth };
     Volume cellVol { "CellVol", cellBox, theDetector.material(sc_material) };
@@ -104,11 +108,50 @@ static Ref_t create_element(Detector& theDetector, xml_h xml_ent, SensitiveDetec
         }
     }
 
+    /* *********************************************************************
+     * HCAL Module
+     * ********************************************************************* */
+    double HCaloModDepth = HCaloDepth + converterDepth;
 
+    Box HCaloModBox { HCaloModWidth / 2, HCaloModHeight / 2, HCaloModDepth / 2 };
+    Volume HCaloModVol { "HCALModule", HCaloModBox, theDetector.material("Air") };
+    HCaloModVol.setVisAttributes(theDetector, "HCALDefaultVis");
+    auto mr_pos = Position(0.0, 0.0, -0.5 * HCaloModDepth + 0.5 * HCaloDepth);
+    PlacedVolume cModPlaced = HCaloModVol.placeVolume(HCaloVol, mr_pos);
+
+    auto bck_pos = Position(0.0, 0.0, 0.5 * HCaloModDepth - 0.5 * converterDepth);
+    PlacedVolume bckPlaced = HCaloModVol.placeVolume(convVol, bck_pos);
+
+    // lateral shields
+    xml_det_t x_calosh = x_det.child(_Unicode(caloShield));
+    auto sh_material = x_calosh.attr<std::string>(_Unicode(material));
+
+    Box shLatBox { (HCaloModWidth - HCaloWidth) / 4, HCaloModHeight / 2, HCaloModDepth / 2 };
+    Volume shLatVol { "HCALShellX", shLatBox, theDetector.material(sh_material) };
+    shLatVol.setVisAttributes(theDetector, x_calosh.visStr());
+    
+    auto sh1_pos = Position(-0.25 * (HCaloModWidth + HCaloWidth), 0.0, 0.0);
+    PlacedVolume sh1Placed = HCaloModVol.placeVolume(shLatVol, 0, sh1_pos);
+    auto sh2_pos = Position(0.25 * (HCaloModWidth + HCaloWidth), 0.0, 0.0);
+    PlacedVolume sh2Placed = HCaloModVol.placeVolume(shLatVol, 1, sh2_pos);
+
+    // top/bottom shields
+    Box shTBBox { HCaloWidth / 2, (HCaloModHeight - HCaloHeight) / 4, HCaloModDepth / 2 };
+    Volume shTBVol { "HCALShellY", shTBBox, theDetector.material(sh_material) };
+    shTBVol.setVisAttributes(theDetector, x_calosh.visStr());
+    
+    auto sh3_pos = Position(0.0, -0.25 * (HCaloModHeight + HCaloHeight), 0.0);
+    PlacedVolume sh3Placed = HCaloModVol.placeVolume(shTBVol, 2, sh3_pos);
+    auto sh4_pos = Position(0.0, 0.25 * (HCaloModHeight + HCaloHeight), 0.0);
+    PlacedVolume sh4Placed = HCaloModVol.placeVolume(shTBVol, 3, sh4_pos);
+
+    /* *********************************************************************
+     * Sub Detector
+     * ********************************************************************* */
     DetElement subdet(det_name, x_det.id());
     Volume motherVolume = theDetector.pickMotherVolume(subdet);
     auto calo_pos = Position(HCaloX, HCaloY, HCaloZ);
-    PlacedVolume HCaloPlaced = motherVolume.placeVolume(HCaloVol, calo_pos);
+    PlacedVolume HCaloPlaced = motherVolume.placeVolume(HCaloModVol, calo_pos);
     subdet.setPlacement(HCaloPlaced);
     return subdet;
 }
