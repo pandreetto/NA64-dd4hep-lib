@@ -2,7 +2,12 @@
 #include "DD4hep/DetFactoryHelper.h"
 #include "DDRec/DetectorData.h"
 
+#include <vector>
+#include <format>
+
 using namespace dd4hep;
+using std::vector;
+using std::format;
 
 static Ref_t create_element(Detector& theDetector, xml_h xml_ent, SensitiveDetector sens_det)
 {
@@ -10,17 +15,14 @@ static Ref_t create_element(Detector& theDetector, xml_h xml_ent, SensitiveDetec
     std::string det_name = x_det.nameStr();
     sens_det.setType( "calorimeter" );
 
-    const double HCaloX = theDetector.constant<double>("HCALPosX");
-    const double HCaloY = theDetector.constant<double>("HCALPosY");
-    const double HCaloZ = theDetector.constant<double>("HCALPosZ");
-
     const double HCaloWidth = theDetector.constant<double>("HCALWidth");
     const double HCaloHeight = theDetector.constant<double>("HCALHeight");
     const double HCaloDepth = theDetector.constant<double>("HCALDepth");
 
     const double HCaloModWidth = theDetector.constant<double>("HCALModWidth");
     const double HCaloModHeight = theDetector.constant<double>("HCALModHeight");
-
+    const double HCaloModGap = theDetector.constant<double>("HCALModGap");
+    const int numberOfModules = theDetector.constant<int>("NModulesHCAL");
 
     const int numberOfLayers = theDetector.constant<int>("NLayersHCAL");
     const double converterDepth = theDetector.constant<double>("HCALConverterDepth");
@@ -32,6 +34,18 @@ static Ref_t create_element(Detector& theDetector, xml_h xml_ent, SensitiveDetec
     const double converterShellDepth = LayerDepth - (converterDepth + counterDepth);
     const double CellSizeX = HCaloWidth / cellNumX;
     const double CellSizeY = HCaloHeight / cellNumY;
+
+    const double HCaloStart = theDetector.constant<double>("HCALStart");
+
+    vector<double> HCaloX;
+    vector<double> HCaloY;
+    vector<double> HCaloZ;
+    for (int k = 0; k < numberOfModules; k++)
+    {
+        HCaloX.push_back(theDetector.constant<double>(format("HCALPosX[{}]", k)));
+        HCaloY.push_back(theDetector.constant<double>(format("HCALPosY[{}]", k)));
+        HCaloZ.push_back(HCaloStart + 0.5 * HCaloDepth - k * HCaloModGap);
+    }
 
     Box HCaloBox { HCaloWidth / 2., HCaloHeight / 2., HCaloDepth / 2. };
     Volume HCaloVol { "HCalVol", HCaloBox, theDetector.material("Air") };
@@ -149,10 +163,26 @@ static Ref_t create_element(Detector& theDetector, xml_h xml_ent, SensitiveDetec
      * Sub Detector
      * ********************************************************************* */
     DetElement subdet(det_name, x_det.id());
-    Volume motherVolume = theDetector.pickMotherVolume(subdet);
-    auto calo_pos = Position(HCaloX, HCaloY, HCaloZ);
-    PlacedVolume HCaloPlaced = motherVolume.placeVolume(HCaloModVol, calo_pos);
-    subdet.setPlacement(HCaloPlaced);
+
+    Volume envelope = dd4hep::xml::createPlacedEnvelope(theDetector, xml_ent, subdet);
+    dd4hep::xml::setDetectorTypeFlag(xml_ent, subdet);
+
+    DetElement mdet0(subdet, "calo_module_0", x_det.id());
+    for (int k = 0; k < numberOfModules; k++)
+    {
+        auto calo_pos = Position(HCaloX[k], HCaloY[k], HCaloZ[k]);
+        PlacedVolume modPlaced = envelope.placeVolume(HCaloModVol, calo_pos);
+        if (k == 0)
+        {
+            mdet0.setPlacement(modPlaced);
+            continue;
+        }
+
+        DetElement mdetk = mdet0.clone("calo_module_" + k, x_det.id());
+        mdetk.setPlacement(modPlaced);
+        subdet.add(mdetk);
+    }
+
     return subdet;
 }
 

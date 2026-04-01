@@ -10,11 +10,16 @@
 
         <constant name="HCALModWidth" value="600.0*mm" />
         <constant name="HCALModHeight" value="600.0*mm" />
+        <constant name="HCALModGap" value="300.0*mm" />
 
-        <constant name="HCALPosX" value="0.0*mm" />
-        <constant name="HCALPosY" value="0.0*mm" />
-        <constant name="HCALPosZ" value="HCALStart + 0.5*HCALDepth" />
+        <constant name="HCALPosX[0]" value="0.0*mm" />
+        <constant name="HCALPosY[0]" value="0.0*mm" />
+        <constant name="HCALPosX[1]" value="0.0*mm" />
+        <constant name="HCALPosY[1]" value="0.0*mm" />
+        <constant name="HCALPosX[2]" value="0.0*mm" />
+        <constant name="HCALPosY[2]" value="0.0*mm" />
 
+        <constant name="NModulesHCAL" value="3" />
         <constant name="NLayersHCAL" value="4" />
         <constant name="HCALCellNumX" value="2" />
         <constant name="HCALCellNumY" value="2" />
@@ -33,6 +38,12 @@
 
     <detectors>
         <detector id="0" name="NA64Hcal" type="NA64HCal_base" readout="NA64HcalHits">
+
+            <type_flags type=" DetType_CALORIMETER + DetType_HADRONIC"/>
+            <envelope vis="HCALDefaultVis">
+                <shape type="Assembly"/>
+            </envelope>
+
             <dimensions x="HCALWidth" y="HCALHeight" z="HCALDepth" />
             <position x="HCALPosX" y="HCALPosY" z="HCALPosZ" />
             <caloConverter material="Iron" vis="HCALConverterVis" />
