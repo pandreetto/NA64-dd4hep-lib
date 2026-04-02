@@ -10,7 +10,7 @@
 
         <constant name="HCALModWidth" value="600.0*mm" />
         <constant name="HCALModHeight" value="600.0*mm" />
-        <constant name="HCALModGap" value="300.0*mm" />
+        <constant name="HCALModGap" value="120.0*mm" />
 
         <constant name="HCALPosX[0]" value="0.0*mm" />
         <constant name="HCALPosY[0]" value="0.0*mm" />
@@ -18,11 +18,13 @@
         <constant name="HCALPosY[1]" value="0.0*mm" />
         <constant name="HCALPosX[2]" value="0.0*mm" />
         <constant name="HCALPosY[2]" value="0.0*mm" />
+        <constant name="HCALPosX[3]" value="0.0*mm" />
+        <constant name="HCALPosY[3]" value="0.0*mm" />
 
-        <constant name="NModulesHCAL" value="3" />
+        <constant name="NModulesHCAL" value="4" />
         <constant name="NLayersHCAL" value="4" />
-        <constant name="HCALCellNumX" value="2" />
-        <constant name="HCALCellNumY" value="2" />
+        <constant name="HCALCellNumX" value="3" />
+        <constant name="HCALCellNumY" value="3" />
 
         <constant name="HCALConverterDepth" value="25.45*mm" />
         <constant name="HCALCounterDepth" value="4.0*mm" />
@@ -56,7 +58,7 @@
     <readouts>
         <readout name="NA64HcalHits">
             <segmentation type="NoSegmentation" />
-            <id>layerid:14,cellid:14</id>
+            <id>moduleid:2,layerid:14,cellid:14</id>
         </readout>
     </readouts>
 

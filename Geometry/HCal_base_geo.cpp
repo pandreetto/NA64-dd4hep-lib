@@ -36,6 +36,7 @@ static Ref_t create_element(Detector& theDetector, xml_h xml_ent, SensitiveDetec
     const double CellSizeY = HCaloHeight / cellNumY;
 
     const double HCaloStart = theDetector.constant<double>("HCALStart");
+    const double HCaloModDepth = HCaloDepth + converterDepth;
 
     vector<double> HCaloX;
     vector<double> HCaloY;
@@ -44,7 +45,9 @@ static Ref_t create_element(Detector& theDetector, xml_h xml_ent, SensitiveDetec
     {
         HCaloX.push_back(theDetector.constant<double>(format("HCALPosX[{}]", k)));
         HCaloY.push_back(theDetector.constant<double>(format("HCALPosY[{}]", k)));
-        HCaloZ.push_back(HCaloStart + 0.5 * HCaloDepth - k * HCaloModGap);
+        double z_offset = HCaloStart + 0.5 * HCaloModDepth;
+        if (k > 0) z_offset += (k - 1) * (HCaloModDepth + HCaloModGap);
+        HCaloZ.push_back(z_offset);
     }
 
     Box HCaloBox { HCaloWidth / 2., HCaloHeight / 2., HCaloDepth / 2. };
@@ -100,13 +103,14 @@ static Ref_t create_element(Detector& theDetector, xml_h xml_ent, SensitiveDetec
 
     Box scBox { HCaloWidth / 2, HCaloHeight / 2,  counterDepth / 2 };
     Volume scVol { "CounterVol", scBox, theDetector.material("Air") };
-    scVol.setVisAttributes(theDetector, x_calosc.visStr());
+    scVol.setVisAttributes(theDetector, "HCALDefaultVis");
 
     auto sc_pos = Position(0.0, 0.0, -0.5 * LayerDepth + converterDepth + 0.5 * counterDepth);
     PlacedVolume scPlaced = layerVol.placeVolume(scVol, 1, sc_pos);
 
     Box cellBox { CellSizeX / 2, CellSizeY / 2, counterDepth };
     Volume cellVol { "CellVol", cellBox, theDetector.material(sc_material) };
+    cellVol.setVisAttributes(theDetector, x_calosc.visStr());
     if (x_calosc.isSensitive()) cellVol.setSensitiveDetector(sens_det);
 
     for (int j = 0; j < cellNumX; j++)
@@ -125,8 +129,6 @@ static Ref_t create_element(Detector& theDetector, xml_h xml_ent, SensitiveDetec
     /* *********************************************************************
      * HCAL Module
      * ********************************************************************* */
-    double HCaloModDepth = HCaloDepth + converterDepth;
-
     Box HCaloModBox { HCaloModWidth / 2, HCaloModHeight / 2, HCaloModDepth / 2 };
     Volume HCaloModVol { "HCALModule", HCaloModBox, theDetector.material("Air") };
     HCaloModVol.setVisAttributes(theDetector, "HCALDefaultVis");
@@ -172,6 +174,7 @@ static Ref_t create_element(Detector& theDetector, xml_h xml_ent, SensitiveDetec
     {
         auto calo_pos = Position(HCaloX[k], HCaloY[k], HCaloZ[k]);
         PlacedVolume modPlaced = envelope.placeVolume(HCaloModVol, calo_pos);
+        modPlaced.addPhysVolID("moduleid", k);
         if (k == 0)
         {
             mdet0.setPlacement(modPlaced);
