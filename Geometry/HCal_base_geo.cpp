@@ -3,11 +3,9 @@
 #include "DDRec/DetectorData.h"
 
 #include <vector>
-#include <format>
 
 using namespace dd4hep;
 using std::vector;
-using std::format;
 
 static Ref_t create_element(Detector& theDetector, xml_h xml_ent, SensitiveDetector sens_det)
 {
@@ -41,10 +39,12 @@ static Ref_t create_element(Detector& theDetector, xml_h xml_ent, SensitiveDetec
     vector<double> HCaloX;
     vector<double> HCaloY;
     vector<double> HCaloZ;
+    std::string posx_str { "HCALPosX[*]" };
+    std::string posy_str { "HCALPosY[*]" };
     for (int k = 0; k < numberOfModules; k++)
     {
-        HCaloX.push_back(theDetector.constant<double>(format("HCALPosX[{}]", k)));
-        HCaloY.push_back(theDetector.constant<double>(format("HCALPosY[{}]", k)));
+        HCaloX.push_back(theDetector.constant<double>(posx_str.replace(9, 1, std::to_string(k))));
+        HCaloY.push_back(theDetector.constant<double>(posy_str.replace(9, 1, std::to_string(k))));
         double z_offset = HCaloStart + 0.5 * HCaloModDepth;
         if (k > 0) z_offset += (k - 1) * (HCaloModDepth + HCaloModGap);
         HCaloZ.push_back(z_offset);
