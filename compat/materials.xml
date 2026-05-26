@@ -23,4 +23,50 @@
         <composite n="8" ref="C" />
     </material>
 
+    <material name="FR4">
+        <D type="density" unit="g/cm3" value="1.7"/>
+        <fraction n="0.1808" ref="Si"/>
+        <fraction n="0.4056" ref="O"/>
+        <fraction n="0.2780" ref="C"/>
+        <fraction n="0.0684" ref="H"/>
+        <fraction n="0.0671" ref="Br"/>
+    </material>
+
+    <material name="Kapton">
+        <D type="density" value="1.413" unit="g/cm3" />
+        <composite n="22" ref="C"/>
+        <composite n="10" ref="H" />
+        <composite n="2" ref="N" />
+        <composite n="5" ref="O" />
+    </material>
+
+    <material name="Mylar">
+        <D type="density" value="1.39" unit="g/cm3"/>
+        <composite n="10" ref="C"/>
+        <composite n="8" ref="H"/>
+        <composite n="4" ref="O"/>
+    </material>
+
+    <material name="Epoxy">
+        <D type="density" value="1.3" unit="g/cm3"/>
+        <composite n="44" ref="H"/>
+        <composite n="15" ref="C"/>
+        <composite n="7" ref="O"/>
+    </material>
+
+    <material name="CarbonFiber">
+        <D type="density" value="1.5" unit="g/cm3"/>
+        <fraction n="0.60" ref="C"/>
+        <fraction n="0.40" ref="Epoxy"/>
+    </material>
+
+    <material name="LYSO">
+        <D type="density" value="7.1" unit="g/cm3"/>
+        <composite n="9" ref="Lu"/>
+        <composite n="1" ref="Y"/>
+        <composite n="5" ref="Si"/>
+        <composite n="25" ref="O"/>
+    </material>
+
+    <!-- reference for materials: na64-simulation/geant4/simulation/src/Core/NA64MaterialDefinition.cc -->
 </materials>

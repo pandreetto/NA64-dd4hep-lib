@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='utf-8'?>
+
+<lccdd>
+    <define>
+
+        <!-- constant name="LYSOPosX" value="0.0*mm" />
+        <constant name="LYSOPosY" value="0.0*mm" />
+        <constant name="LYSOPosZ" value="LYSOStart + 0.5*LYSODepth" / -->
+
+        <constant name="LYSOCellNumX" value="6" />
+        <constant name="LYSOCellNumY" value="1" />
+        <constant name="LYSOCellNumZ" value="1" />
+
+        <constant name="LYSOFrontWidth" value="33.6*mm" />
+        <constant name="LYSOFrontHeight" value="184.0*mm" />
+        <constant name="LYSOFrontDepth" value="3.0*mm" />
+        <constant name="LYSOSideWidth" value="1.0*mm" />
+        <constant name="LYSOSideDepth" value="63.5*mm" />
+        <constant name="LYSOBackDepth" value="10.0*mm" />
+
+        <constant name="LYSOWidth" value="LYSOFrontWidth+10.0*mm" />
+        <constant name="LYSOHeight" value="LYSOFrontHeight+10.0*mm" />
+        <constant name="LYSODepth" value="LYSOSideDepth+10.0*mm" />
+
+        <constant name="LYSOModWidth" value="34.62*mm" />
+        <constant name="LYSOModHeight" value="194.0*mm" />
+        <constant name="LYSOModDepth" value="64.5*mm" />
+        <constant name="NModulesLYSO" value="6" />
+        <constant name="LYSOModDist" value="0.01*mm" />
+
+        <constant name="LYSOFrontCenterX" value="0.0*mm" />
+        <constant name="LYSOFrontCenterY" value="0.0*mm" />
+        <constant name="LYSOFrontCenterZ" value="5.0*mm" />
+
+    </define>
+
+    <display>
+        <vis name="LYSODefaultVis" alpha="1.0" r="0.0" g="0.0" b="0.0" showDaughters="true" visible="false"/>
+        <vis name="LYSOFrontVis" alpha="1.0" r="1.0" g="0.0" b="0.0" showDaughters="true" visible="true"/>
+        <vis name="LYSOShellVis" alpha="1.0" r="0.0" g="0.0" b="1.0" showDaughters="true" visible="true"/>
+        <vis name="LYSOMatrixVis" alpha="1.0" r="0.0" g="1.0" b="0.0" showDaughters="true" visible="true"/>
+    </display>
+
+    <detectors>
+        <detector id="0" name="NA64LYSO" type="NA64LYSO_base" readout="NA64LYSOHits">
+            <envelope vis="LYSODefaultVis">
+                <shape type="Assembly"/>
+            </envelope>
+
+            <lysoFront material="CarbonFiber" vis="LYSOFrontVis" />
+            <lysoShell material="Aluminum" vis="LYSOShellVis" />
+            <lysoMatrix sensitive="true" material="LYSO" vis="LYSOMatrixVis" />
+        </detector>
+    </detectors>
+
+    <readouts>
+        <readout name="NA64LYSOHits">
+            <segmentation type="NoSegmentation" />
+            <id>moduleid:8,cellid:14</id>
+        </readout>
+    </readouts>
+
+</lccdd>
