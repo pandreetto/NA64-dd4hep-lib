@@ -53,7 +53,7 @@ Geant4DarkMatterPhysics::Geant4DarkMatterPhysics(Geant4Context* ctxt, const std:
     declareProperty("Epsilon", Epsilon = 0);
     declareProperty("ANucl", ANucl = 0);
     declareProperty("ZNucl", ZNucl = 0);
-    declareProperty("Density", Density = 0);
+    //declareProperty("Density", Density = 0);
     declareProperty("DecayType", DecayType = 0);
     declareProperty("RDM", RDM = 1. / 3);
     declareProperty("fFactor", fFactor = 0.1);
@@ -65,62 +65,62 @@ Geant4DarkMatterPhysics::Geant4DarkMatterPhysics(Geant4Context* ctxt, const std:
 
     EThresh /= GeV;
     DMMass /= GeV;
-    Density /= (g / cm3);
+    //Density /= (g / cm3);
 
     switch(DMProcessType)
     {
     case 1:
-        myDarkMatter = new DarkPhotons(DMMass, EThresh, 1., ANucl, ZNucl, Density, Epsilon, DecayType);
+        myDarkMatter = new DarkPhotons(DMMass, EThresh, 1., ANucl, ZNucl, Epsilon, DecayType);
         break;
     case 2:
-        myDarkMatter = new DarkScalars(DMMass, EThresh, 1., ANucl, ZNucl, Density, Epsilon, DecayType);
+        myDarkMatter = new DarkScalars(DMMass, EThresh, 1., ANucl, ZNucl, Epsilon, DecayType);
         break;
     case 3:
-        myDarkMatter = new DarkAxials(DMMass, EThresh, 1., ANucl, ZNucl, Density,  Epsilon, DecayType);
+        myDarkMatter = new DarkAxials(DMMass, EThresh, 1., ANucl, ZNucl,  Epsilon, DecayType);
         break;
     case 4:
-        myDarkMatter = new DarkPseudoScalars(DMMass, EThresh, 1., ANucl, ZNucl, Density,  Epsilon, DecayType);
+        myDarkMatter = new DarkPseudoScalars(DMMass, EThresh, 1., ANucl, ZNucl,  Epsilon, DecayType);
         break;
     case 5:
         if(DecayType) throw "DarkMassSpin2 with decays is not yet implemented";
-        myDarkMatter = new DarkMassSpin2(DMMass, EThresh, 1., ANucl, ZNucl, Density,  Epsilon, DecayType);
+        myDarkMatter = new DarkMassSpin2(DMMass, EThresh, 1., ANucl, ZNucl,  Epsilon, DecayType);
         break;
     case 21:
-        myDarkMatter = new ALP(DMMass, EThresh, 1., ANucl, ZNucl, Density,  Epsilon, DecayType);
+        myDarkMatter = new ALP(DMMass, EThresh, 1., ANucl, ZNucl,  Epsilon, DecayType);
         break;
     case 31:
-        myDarkMatter = new DarkZ(DMMass, EThresh, 1., ANucl, ZNucl, Density,  Epsilon, DecayType);
+        myDarkMatter = new DarkZ(DMMass, EThresh, 1., ANucl, ZNucl,  Epsilon, DecayType);
         break;
     case 32:
         if(DecayType) throw "DarkMuPhilicScalar with decays is not yet implemented";
-        myDarkMatter = new DarkMuPhilicScalars(DMMass, EThresh, 1., ANucl, ZNucl, Density, Epsilon, DecayType);
+        myDarkMatter = new DarkMuPhilicScalars(DMMass, EThresh, 1., ANucl, ZNucl, Epsilon, DecayType);
         break;
     case 34:
         if(DecayType) throw "DarkMuPhilicPseudoScalar with decays is not yet implemented";
-        myDarkMatter = new DarkMuPhilicPseudoScalars(DMMass, EThresh, 1., ANucl, ZNucl, Density,  Epsilon, DecayType);
+        myDarkMatter = new DarkMuPhilicPseudoScalars(DMMass, EThresh, 1., ANucl, ZNucl,  Epsilon, DecayType);
         break;
     case 11:
-        myDarkMatter = new DarkPhotonsAnnihilation(DMMass, EThresh, 1., ANucl, ZNucl, Density, Epsilon, 
+        myDarkMatter = new DarkPhotonsAnnihilation(DMMass, EThresh, 1., ANucl, ZNucl, Epsilon,
                                                    DecayType, RDM, AlphaD, BranchingType, fFactor);
     break;
     case 12:
-        myDarkMatter = new DarkScalarsAnnihilation(DMMass, EThresh, 1., ANucl, ZNucl, Density, Epsilon,
+        myDarkMatter = new DarkScalarsAnnihilation(DMMass, EThresh, 1., ANucl, ZNucl, Epsilon,
                                                    DecayType, RDM, AlphaD, BranchingType, fFactor );
     break;
     case 13:
-        myDarkMatter = new DarkAxialsAnnihilation(DMMass, EThresh, 1., ANucl, ZNucl, Density, Epsilon,
+        myDarkMatter = new DarkAxialsAnnihilation(DMMass, EThresh, 1., ANucl, ZNucl, Epsilon,
                                                   DecayType, RDM, AlphaD, BranchingType, fFactor );
     break;
     case 14:
-        myDarkMatter = new DarkPseudoScalarsAnnihilation(DMMass, EThresh, 1., ANucl, ZNucl, Density, Epsilon,
+        myDarkMatter = new DarkPseudoScalarsAnnihilation(DMMass, EThresh, 1., ANucl, ZNucl, Epsilon,
                                                          DecayType, RDM, AlphaD, BranchingType, fFactor );
         break;
     case 15:
-        myDarkMatter = new DarkMassSpin2Annihilation(DMMass, EThresh, 1., ANucl, ZNucl, Density, Epsilon,
+        myDarkMatter = new DarkMassSpin2Annihilation(DMMass, EThresh, 1., ANucl, ZNucl, Epsilon,
                                                      DecayType, RDM, AlphaD, BranchingType, fFactor );
         break;
     case 16:
-        myDarkMatter = new DarkZAnnihilation(DMMass, EThresh, 1., ANucl, ZNucl, Density, Epsilon,
+        myDarkMatter = new DarkZAnnihilation(DMMass, EThresh, 1., ANucl, ZNucl, Epsilon,
                                              DecayType, RDM, AlphaD, BranchingType,fFactor);
         break;
     default:
