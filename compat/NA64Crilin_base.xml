@@ -1,0 +1,49 @@
+<?xml version='1.0' encoding='utf-8'?>
+
+<lccdd>
+    <define>
+        <constant name="CrilinPosX" value="0.0*mm" />
+        <constant name="CrilinPosY" value="0.0*mm" />
+        <constant name="CrilinPosZ" value="0.0*mm" />
+        <constant name="CrilinCrystalSize" value="13.0*mm" />
+        <constant name="CrilinCrystalLength" value="40.0*mm" />
+        <constant name="CrilinWrapThickness" value="0.1*mm" />
+        <constant name="CrilinHoneyCombThickness" value="0.1*mm" />
+        <constant name="CrilinElectroThickness" value="2.0*mm" />
+        <constant name="CrilinShellThickness" value="2.0*mm" />
+        <constant name="CrilinSiPMSize" value="3.0*mm" />
+        <constant name="CrilinSiPMThickness" value="2.0*mm" />
+        <constant name="CrilinNumCellX" value="7" />
+        <constant name="CrilinNumCellY" value="7" />
+        <constant name="CrilinNumLayer" value="5" />
+    </define>
+
+    <display>
+        <vis name="CrilinDefaultVis" alpha="1.0" r="0.0" g="0.0" b="0.0" showDaughters="true" visible="false"/>
+        <vis name="CrilinCrystalVis" alpha="1.0" r="1.0" g="1.0" b="0.1" showDaughters="true" visible="true"/>
+        <vis name="CrinlinWrapVis" alpha="1.0" r="1.0" g="1.0" b="1.0" showDaughters="true" visible="true"/>
+        <vis name="CrilinHoneyCombVis" alpha="1.0" r="0.5" g="0.5" b="0.5" showDaughters="true" visible="true"/>
+        <vis name="CrilinPCBVis" alpha="1.0" r="0.0" g="1.0" b="0.0" showDaughters="true" visible="true"/>
+        <vis name="CrilinSiPMVis" alpha="1.0" r="1.0" g="0.0" b="0.0" showDaughters="true" visible="true"/>
+        <vis name="CrilinShellVis" alpha="1.0" r="0.7" g="0.7" b="0.7" showDaughters="true" visible="true"/>
+    </display>
+
+    <detectors>
+        <detector id="0" name="NA64Crilin" type="NA64Crilin_base" readout="NA64CrilinHits">
+            <crystal material="LeadFluoride" vis="CrilinCrystalVis" />
+            <wrap material="Mylar" vis="CrinlinWrapVis" />
+            <honeycomb material="Aluminum" vis="CrilinHoneyCombVis" />
+            <electro material="PCB" vis="CrilinPCBVis" />
+            <siPM material="Silicon" vis="CrilinSiPMVis" />
+            <shell material="Aluminum" vis="CrilinShellVis" />
+        </detector>
+    </detectors>
+
+    <readouts>
+        <readout name="NA64CrilinHits">
+            <segmentation type="NoSegmentation" />
+            <id>cellid:32</id>
+        </readout>
+    </readouts>
+
+</lccdd>

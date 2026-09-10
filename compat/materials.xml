@@ -68,5 +68,24 @@
         <composite n="25" ref="O"/>
     </material>
 
+    <material name="LeadFluoride">
+        <D type="density" value="7.83" unit="g/cm3"/>
+        <composite n="1" ref="Pb"/>
+        <composite n="2" ref="F"/>
+    </material>
+
+    <material name="Fiberglass">
+        <D type="density" value="2.6" unit="g/cm3"/>
+        <composite n="1" ref="Si"/>
+        <composite n="2" ref="O"/>
+    </material>
+
+    <material name="PCB">
+        <D type="density" value="1.85" unit="g/cm3"/>
+        <fraction n="0.4" ref="Epoxy"/>
+        <fraction n="0.5" ref="Fiberglass"/>
+        <fraction n="0.1" ref="Cu"/>
+    </material>
+
     <!-- reference for materials: na64-simulation/geant4/simulation/src/Core/NA64MaterialDefinition.cc -->
 </materials>
