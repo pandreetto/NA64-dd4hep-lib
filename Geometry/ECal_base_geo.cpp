@@ -52,9 +52,8 @@ static Ref_t create_element(Detector& theDetector, xml_h xml_ent, SensitiveDetec
     Volume layerVol { "ECalLayerVol", layerBox, theDetector.material("Air") };
     layerVol.setVisAttributes(theDetector, "ECALDefaultVis");
 
-    Box cellBox { CellSizeX / 2, CellSizeY / 2, LayerDepth / 2 };
-    Volume cellVol { "ECalCellVol", cellBox, theDetector.material("Air") };
-    cellVol.setVisAttributes(theDetector, "ECALDefaultVis");
+    Assembly cellAss { "ECalCellAssembly" };
+    cellAss.setVisAttributes(theDetector, "ECALDefaultVis");
 
     /* *********************************************************************
      * Cover of ECAL fibers
@@ -82,8 +81,7 @@ static Ref_t create_element(Detector& theDetector, xml_h xml_ent, SensitiveDetec
     convVol.setVisAttributes(theDetector, x_caloconv.visStr());
 
     auto conv_pos = Position(0.0, 0.0, -0.5 * LayerDepth + 0.5 * converterDepth);
-    PlacedVolume convPlaced = cellVol.placeVolume(convVol, 1, conv_pos);
-    convPlaced.addPhysVolID("modid", 0);
+    cellAss.placeVolume(convVol, conv_pos);
 
     /* *********************************************************************
      * ECAL counter
@@ -103,8 +101,7 @@ static Ref_t create_element(Detector& theDetector, xml_h xml_ent, SensitiveDetec
     if (x_calosc.isSensitive()) scVol.setSensitiveDetector(sens_det);
 
     auto sc_pos = Position(0.0, 0.0, 0.5 * LayerDepth - 0.5 * counterDepth);
-    PlacedVolume scPlaced = cellVol.placeVolume(scVol, 1, sc_pos);
-    scPlaced.addPhysVolID("modid", 1);
+    cellAss.placeVolume(scVol, sc_pos);
 
     /* *********************************************************************
      * Iron rods
@@ -117,16 +114,16 @@ static Ref_t create_element(Detector& theDetector, xml_h xml_ent, SensitiveDetec
     rodVol.setVisAttributes(theDetector, x_rod.visStr());
 
     auto rc_posz = -0.5 * LayerDepth + 0.5 * converterDepth;
-    cellVol.placeVolume(rodVol, 1, Position(holeDX, holeDY, rc_posz));
-    cellVol.placeVolume(rodVol, 2, Position(holeDX, -holeDY, rc_posz));
-    cellVol.placeVolume(rodVol, 3, Position(-holeDX, holeDY, rc_posz));
-    cellVol.placeVolume(rodVol, 4, Position(-holeDX, -holeDY, rc_posz));
+    cellAss.placeVolume(rodVol, 1, Position(holeDX, holeDY, rc_posz));
+    cellAss.placeVolume(rodVol, 2, Position(holeDX, -holeDY, rc_posz));
+    cellAss.placeVolume(rodVol, 3, Position(-holeDX, holeDY, rc_posz));
+    cellAss.placeVolume(rodVol, 4, Position(-holeDX, -holeDY, rc_posz));
 
     auto sc_posz = 0.5 * LayerDepth - 0.5 * counterDepth;
-    cellVol.placeVolume(rodVol, 5, Position(holeDX, holeDY, sc_posz));
-    cellVol.placeVolume(rodVol, 6, Position(holeDX, -holeDY, sc_posz));
-    cellVol.placeVolume(rodVol, 7, Position(-holeDX, holeDY, sc_posz));
-    cellVol.placeVolume(rodVol, 8, Position(-holeDX, -holeDY, sc_posz));
+    cellAss.placeVolume(rodVol, 5, Position(holeDX, holeDY, sc_posz));
+    cellAss.placeVolume(rodVol, 6, Position(holeDX, -holeDY, sc_posz));
+    cellAss.placeVolume(rodVol, 7, Position(-holeDX, holeDY, sc_posz));
+    cellAss.placeVolume(rodVol, 8, Position(-holeDX, -holeDY, sc_posz));
 
     /* *********************************************************************
      * Layers
@@ -146,8 +143,8 @@ static Ref_t create_element(Detector& theDetector, xml_h xml_ent, SensitiveDetec
                 -ECaloHeight / 2. + CellSizeY / 2 + h * CellSizeY, 0);
             int cell_idx = j * cellNumY + h;
 
-            PlacedVolume cellPlaced = layerVol.placeVolume(cellVol, cell_idx, cell_pos);
-            cellPlaced.addPhysVolID("cellid", cell_idx);
+            PlacedVolume cellPlaced = layerVol.placeVolume(cellAss, cell_idx, cell_pos);
+            cellPlaced.addPhysVolID("cellx", j).addPhysVolID("celly", h);
         }
     }
 

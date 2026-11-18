@@ -44,7 +44,7 @@
     <readouts>
         <readout name="NA64EcalHits">
             <segmentation type="NoSegmentation" />
-            <id>layerid:14,cellid:14,modid:2</id>
+            <id>layerid:14,cellx:8,celly:8</id>
         </readout>
     </readouts>
 
