@@ -109,21 +109,14 @@ static Ref_t create_element(Detector& theDetector, xml_h xml_ent, SensitiveDetec
     xml_det_t x_rod = x_det.child(_Unicode(rod));
     auto rod_material = x_rod.attr<std::string>(_Unicode(material));
 
-    Tube rodTube { 0.0, holeRadius, converterDepth / 2 };
+    Tube rodTube { 0.0, holeRadius, LayerDepth / 2 };
     Volume rodVol { "RodVol", rodTube, theDetector.material(rod_material) };
     rodVol.setVisAttributes(theDetector, x_rod.visStr());
 
-    auto rc_posz = -0.5 * LayerDepth + 0.5 * converterDepth;
-    cellAss.placeVolume(rodVol, 1, Position(holeDX, holeDY, rc_posz));
-    cellAss.placeVolume(rodVol, 2, Position(holeDX, -holeDY, rc_posz));
-    cellAss.placeVolume(rodVol, 3, Position(-holeDX, holeDY, rc_posz));
-    cellAss.placeVolume(rodVol, 4, Position(-holeDX, -holeDY, rc_posz));
-
-    auto sc_posz = 0.5 * LayerDepth - 0.5 * counterDepth;
-    cellAss.placeVolume(rodVol, 5, Position(holeDX, holeDY, sc_posz));
-    cellAss.placeVolume(rodVol, 6, Position(holeDX, -holeDY, sc_posz));
-    cellAss.placeVolume(rodVol, 7, Position(-holeDX, holeDY, sc_posz));
-    cellAss.placeVolume(rodVol, 8, Position(-holeDX, -holeDY, sc_posz));
+    cellAss.placeVolume(rodVol, 1, Position(holeDX, holeDY, 0.0));
+    cellAss.placeVolume(rodVol, 2, Position(holeDX, -holeDY, 0.0));
+    cellAss.placeVolume(rodVol, 3, Position(-holeDX, holeDY, 0.0));
+    cellAss.placeVolume(rodVol, 4, Position(-holeDX, -holeDY, 0.0));
 
     /* *********************************************************************
      * Layers
