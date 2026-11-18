@@ -38,19 +38,12 @@ static Ref_t create_element(Detector& theDetector, xml_h xml_ent, SensitiveDetec
     const double holeDX = CellSizeX / 4;
     const double holeDY = CellSizeY / 4;
 
-    Box ECaloBox { ECaloWidth / 2., ECaloHeight / 2., ECaloDepth / 2. };
-    Volume ECaloVol { "ECalVol", ECaloBox, theDetector.material("Air") };
-    ECaloVol.setVisAttributes(theDetector, "ECALDefaultVis");
-
     DetElement subdet(det_name, x_det.id());
-    Volume motherVolume = theDetector.pickMotherVolume(subdet);
-    auto calo_pos = Position(ECaloX, ECaloY, ECaloZ);
-    PlacedVolume ECaloPlaced = motherVolume.placeVolume(ECaloVol, calo_pos);
-    subdet.setPlacement(ECaloPlaced);
+    Volume envelope = dd4hep::xml::createPlacedEnvelope(theDetector, xml_ent, subdet);
+    dd4hep::xml::setDetectorTypeFlag(xml_ent, subdet);
 
-    Box layerBox { ECaloWidth / 2., ECaloHeight / 2., LayerDepth / 2 };
-    Volume layerVol { "ECalLayerVol", layerBox, theDetector.material("Air") };
-    layerVol.setVisAttributes(theDetector, "ECALDefaultVis");
+    Assembly detAss { "ECalDetAssembly" };
+    detAss.setVisAttributes(theDetector, "ECALDefaultVis");
 
     Assembly cellAss { "ECalCellAssembly" };
     cellAss.setVisAttributes(theDetector, "ECALDefaultVis");
@@ -61,8 +54,8 @@ static Ref_t create_element(Detector& theDetector, xml_h xml_ent, SensitiveDetec
     Box CoverBox { ECaloWidth / 2, ECaloHeight / 2, FaceThickness / 2 };
     Volume CoverVol { "ECALScreenZVol", CoverBox, theDetector.material("Al") };
     CoverVol.setVisAttributes(theDetector, "ECALCoverVis");
-    auto coverPos = Position(ECaloX, ECaloY, ECaloZ + (ECaloDepth + FaceThickness) / 2);
-    motherVolume.placeVolume(CoverVol, coverPos);
+    auto coverPos = Position(0.0, 0.0, (ECaloDepth + FaceThickness) / 2);
+    detAss.placeVolume(CoverVol, 0, coverPos);
 
     /* *********************************************************************
      * ECAL converter
@@ -121,9 +114,13 @@ static Ref_t create_element(Detector& theDetector, xml_h xml_ent, SensitiveDetec
     /* *********************************************************************
      * Layers
      * ********************************************************************* */
+    Box layerBox { ECaloWidth / 2., ECaloHeight / 2., LayerDepth / 2 };
+    Volume layerVol { "ECalLayerVol", layerBox, theDetector.material("Air") };
+    layerVol.setVisAttributes(theDetector, "ECALDefaultVis");
+
     for (int k = 0; k < numberOfLayers; k++)
     {
-        PlacedVolume layerPlaced = ECaloVol.placeVolume(layerVol, k,
+        PlacedVolume layerPlaced = detAss.placeVolume(layerVol, k + 1,
             Position(0., 0., -ECaloDepth / 2. + LayerDepth / 2. + k * LayerDepth));
         layerPlaced.addPhysVolID("layerid", k);
     }
@@ -140,6 +137,9 @@ static Ref_t create_element(Detector& theDetector, xml_h xml_ent, SensitiveDetec
             cellPlaced.addPhysVolID("cellx", j).addPhysVolID("celly", h);
         }
     }
+
+    auto calo_pos = Position(ECaloX, ECaloY, ECaloZ);
+    envelope.placeVolume(detAss, calo_pos);
 
     return subdet;
 }
