@@ -6,6 +6,7 @@ option(INSTALL_COMPACT_FILES "Copy compact files to install area" ON)
 
 find_package(Geant4 REQUIRED)
 find_package(DD4hep REQUIRED COMPONENTS DDG4)
+find_package(DMG4 REQUIRED)
 
 include_directories(./Core/include
                     /usr/include/DMG4

@@ -87,5 +87,17 @@
         <fraction n="0.1" ref="Cu"/>
     </material>
 
+    <material name="CarbonDioxide">
+        <D type="density" value="0.00198" unit="g/cm3"/>
+        <composite n="1" ref="C"/>
+        <composite n="2" ref="O"/>
+    </material>
+
+    <material name="StrawGas">
+        <D type="density" value="0.001823" unit="g/cm3"/>
+        <fraction n="0.8" ref="Argon"/>
+        <fraction n="0.2" ref="CarbonDioxide"/>
+    </material>
+
     <!-- reference for materials: na64-simulation/geant4/simulation/src/Core/NA64MaterialDefinition.cc -->
 </materials>
