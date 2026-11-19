@@ -10,18 +10,7 @@
 
         <constant name="HCALModWidth" value="600.0*mm" />
         <constant name="HCALModHeight" value="600.0*mm" />
-        <constant name="HCALModGap" value="120.0*mm" />
 
-        <constant name="HCALPosX[0]" value="0.0*mm" />
-        <constant name="HCALPosY[0]" value="0.0*mm" />
-        <constant name="HCALPosX[1]" value="0.0*mm" />
-        <constant name="HCALPosY[1]" value="0.0*mm" />
-        <constant name="HCALPosX[2]" value="0.0*mm" />
-        <constant name="HCALPosY[2]" value="0.0*mm" />
-        <constant name="HCALPosX[3]" value="0.0*mm" />
-        <constant name="HCALPosY[3]" value="0.0*mm" />
-
-        <constant name="NModulesHCAL" value="4" />
         <constant name="NLayersHCAL" value="4" />
         <constant name="HCALCellNumX" value="3" />
         <constant name="HCALCellNumY" value="3" />
@@ -45,6 +34,10 @@
             <envelope vis="HCALDefaultVis">
                 <shape type="Assembly"/>
             </envelope>
+            <module id="0" posx="-405.88*mm" posy="11.70*mm" posz="4696.105*mm"/>
+            <module id="1" posx="-441.98*mm" posy="14.25*mm" posz="6393.575*mm"/>
+            <module id="2" posx="-490.03*mm" posy="-1.15*mm" posz="8094.205*mm"/>
+            <module id="3" posx="3.15*mm" posy="-6.58*mm" posz="9795.175*mm"/>
 
             <dimensions x="HCALWidth" y="HCALHeight" z="HCALDepth" />
             <position x="HCALPosX" y="HCALPosY" z="HCALPosZ" />
@@ -58,7 +51,7 @@
     <readouts>
         <readout name="NA64HcalHits">
             <segmentation type="NoSegmentation" />
-            <id>moduleid:2,layerid:14,cellid:14</id>
+            <id>system:4,moduleid:4,layerid:12,cellid:12</id>
         </readout>
     </readouts>
 

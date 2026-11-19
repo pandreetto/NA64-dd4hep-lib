@@ -2,6 +2,7 @@
 #include "DD4hep/DetFactoryHelper.h"
 #include "DDRec/DetectorData.h"
 
+#include <format>
 #include <vector>
 
 using namespace dd4hep;
@@ -11,6 +12,7 @@ static Ref_t create_element(Detector& theDetector, xml_h xml_ent, SensitiveDetec
 {
     xml_det_t x_det = xml_ent;
     std::string det_name = x_det.nameStr();
+    int det_id = x_det.id();
     sens_det.setType( "calorimeter" );
 
     const double HCaloWidth = theDetector.constant<double>("HCALWidth");
@@ -19,8 +21,6 @@ static Ref_t create_element(Detector& theDetector, xml_h xml_ent, SensitiveDetec
 
     const double HCaloModWidth = theDetector.constant<double>("HCALModWidth");
     const double HCaloModHeight = theDetector.constant<double>("HCALModHeight");
-    const double HCaloModGap = theDetector.constant<double>("HCALModGap");
-    const int numberOfModules = theDetector.constant<int>("NModulesHCAL");
 
     const int numberOfLayers = theDetector.constant<int>("NLayersHCAL");
     const double converterDepth = theDetector.constant<double>("HCALConverterDepth");
@@ -35,20 +35,6 @@ static Ref_t create_element(Detector& theDetector, xml_h xml_ent, SensitiveDetec
 
     const double HCaloStart = theDetector.constant<double>("HCALStart");
     const double HCaloModDepth = HCaloDepth + converterDepth;
-
-    vector<double> HCaloX;
-    vector<double> HCaloY;
-    vector<double> HCaloZ;
-    std::string posx_str { "HCALPosX[*]" };
-    std::string posy_str { "HCALPosY[*]" };
-    for (int k = 0; k < numberOfModules; k++)
-    {
-        HCaloX.push_back(theDetector.constant<double>(posx_str.replace(9, 1, std::to_string(k))));
-        HCaloY.push_back(theDetector.constant<double>(posy_str.replace(9, 1, std::to_string(k))));
-        double z_offset = HCaloStart + 0.5 * HCaloModDepth;
-        if (k > 0) z_offset += (k - 1) * (HCaloModDepth + HCaloModGap);
-        HCaloZ.push_back(z_offset);
-    }
 
     Box HCaloBox { HCaloWidth / 2., HCaloHeight / 2., HCaloDepth / 2. };
     Volume HCaloVol { "HCalVol", HCaloBox, theDetector.material("Air") };
@@ -127,17 +113,8 @@ static Ref_t create_element(Detector& theDetector, xml_h xml_ent, SensitiveDetec
     }
 
     /* *********************************************************************
-     * HCAL Module
+     * HCAL Modules
      * ********************************************************************* */
-    Box HCaloModBox { HCaloModWidth / 2, HCaloModHeight / 2, HCaloModDepth / 2 };
-    Volume HCaloModVol { "HCALModule", HCaloModBox, theDetector.material("Air") };
-    HCaloModVol.setVisAttributes(theDetector, "HCALDefaultVis");
-    auto mr_pos = Position(0.0, 0.0, -0.5 * HCaloModDepth + 0.5 * HCaloDepth);
-    PlacedVolume cModPlaced = HCaloModVol.placeVolume(HCaloVol, mr_pos);
-
-    auto bck_pos = Position(0.0, 0.0, 0.5 * HCaloModDepth - 0.5 * converterDepth);
-    PlacedVolume bckPlaced = HCaloModVol.placeVolume(convVol, bck_pos);
-
     // lateral shields
     xml_det_t x_calosh = x_det.child(_Unicode(caloShield));
     auto sh_material = x_calosh.attr<std::string>(_Unicode(material));
@@ -146,44 +123,45 @@ static Ref_t create_element(Detector& theDetector, xml_h xml_ent, SensitiveDetec
     Volume shLatVol { "HCALShellX", shLatBox, theDetector.material(sh_material) };
     shLatVol.setVisAttributes(theDetector, x_calosh.visStr());
     
-    auto sh1_pos = Position(-0.25 * (HCaloModWidth + HCaloWidth), 0.0, 0.0);
-    PlacedVolume sh1Placed = HCaloModVol.placeVolume(shLatVol, 0, sh1_pos);
-    auto sh2_pos = Position(0.25 * (HCaloModWidth + HCaloWidth), 0.0, 0.0);
-    PlacedVolume sh2Placed = HCaloModVol.placeVolume(shLatVol, 1, sh2_pos);
-
     // top/bottom shields
     Box shTBBox { HCaloWidth / 2, (HCaloModHeight - HCaloHeight) / 4, HCaloModDepth / 2 };
     Volume shTBVol { "HCALShellY", shTBBox, theDetector.material(sh_material) };
     shTBVol.setVisAttributes(theDetector, x_calosh.visStr());
     
-    auto sh3_pos = Position(0.0, -0.25 * (HCaloModHeight + HCaloHeight), 0.0);
-    PlacedVolume sh3Placed = HCaloModVol.placeVolume(shTBVol, 2, sh3_pos);
-    auto sh4_pos = Position(0.0, 0.25 * (HCaloModHeight + HCaloHeight), 0.0);
-    PlacedVolume sh4Placed = HCaloModVol.placeVolume(shTBVol, 3, sh4_pos);
-
-    /* *********************************************************************
-     * Sub Detector
-     * ********************************************************************* */
     DetElement subdet(det_name, x_det.id());
 
     Volume envelope = dd4hep::xml::createPlacedEnvelope(theDetector, xml_ent, subdet);
     dd4hep::xml::setDetectorTypeFlag(xml_ent, subdet);
 
-    DetElement mdet0(subdet, "calo_module_0", x_det.id());
-    for (int k = 0; k < numberOfModules; k++)
+    for (xml_coll_t modItem(xml_ent, _U(module)); modItem; modItem++)
     {
-        auto calo_pos = Position(HCaloX[k], HCaloY[k], HCaloZ[k]);
-        PlacedVolume modPlaced = envelope.placeVolume(HCaloModVol, calo_pos);
-        modPlaced.addPhysVolID("moduleid", k);
-        if (k == 0)
-        {
-            mdet0.setPlacement(modPlaced);
-            continue;
-        }
+    	xml_comp_t hModule(modItem);
+		int module_id = hModule.id();
+    	const double PosX = hModule.attr<double>(_Unicode(posx), 0.0);
+    	const double PosY = hModule.attr<double>(_Unicode(posy), 0.0);
+    	const double PosZ = hModule.attr<double>(_Unicode(posz), 0.0);
 
-        DetElement mdetk = mdet0.clone("calo_module_" + k, x_det.id());
-        mdetk.setPlacement(modPlaced);
-        subdet.add(mdetk);
+    	Assembly modAssembly { std::format("HCalModAssembly_{}", module_id) };
+    	modAssembly.setVisAttributes(theDetector, "HCALDefaultVis");
+
+        auto mr_pos = Position(0.0, 0.0, -0.5 * HCaloModDepth + 0.5 * HCaloDepth);
+        PlacedVolume cModPlaced = modAssembly.placeVolume(HCaloVol, mr_pos);
+        auto bck_pos = Position(0.0, 0.0, 0.5 * HCaloModDepth - 0.5 * converterDepth);
+        PlacedVolume bckPlaced = modAssembly.placeVolume(convVol, bck_pos);
+
+        auto sh1_pos = Position(-0.25 * (HCaloModWidth + HCaloWidth), 0.0, 0.0);
+        PlacedVolume sh1Placed = modAssembly.placeVolume(shLatVol, 0, sh1_pos);
+        auto sh2_pos = Position(0.25 * (HCaloModWidth + HCaloWidth), 0.0, 0.0);
+        PlacedVolume sh2Placed = modAssembly.placeVolume(shLatVol, 1, sh2_pos);
+
+        auto sh3_pos = Position(0.0, -0.25 * (HCaloModHeight + HCaloHeight), 0.0);
+        PlacedVolume sh3Placed = modAssembly.placeVolume(shTBVol, 2, sh3_pos);
+        auto sh4_pos = Position(0.0, 0.25 * (HCaloModHeight + HCaloHeight), 0.0);
+        PlacedVolume sh4Placed = modAssembly.placeVolume(shTBVol, 3, sh4_pos);
+
+    	auto mod_pos = Position(PosX, PosY, PosZ);
+    	PlacedVolume modPlaced = envelope.placeVolume(modAssembly, mod_pos);
+		modPlaced.addPhysVolID("system", det_id).addPhysVolID("moduleid", module_id);
     }
 
     return subdet;
