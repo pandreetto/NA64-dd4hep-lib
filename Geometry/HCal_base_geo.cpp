@@ -33,12 +33,7 @@ static Ref_t create_element(Detector& theDetector, xml_h xml_ent, SensitiveDetec
     const double CellSizeX = HCaloWidth / cellNumX;
     const double CellSizeY = HCaloHeight / cellNumY;
 
-    const double HCaloStart = theDetector.constant<double>("HCALStart");
     const double HCaloModDepth = HCaloDepth + converterDepth;
-
-    Box HCaloBox { HCaloWidth / 2., HCaloHeight / 2., HCaloDepth / 2. };
-    Volume HCaloVol { "HCalVol", HCaloBox, theDetector.material("Air") };
-    HCaloVol.setVisAttributes(theDetector, "HCALDefaultVis");
 
     /* *********************************************************************
      * Layers
@@ -46,13 +41,6 @@ static Ref_t create_element(Detector& theDetector, xml_h xml_ent, SensitiveDetec
     Box layerBox { HCaloWidth / 2., HCaloHeight / 2., LayerDepth / 2 };
     Volume layerVol { "HCalLayerVol", layerBox, theDetector.material("Air") };
     layerVol.setVisAttributes(theDetector, "HCALDefaultVis");
-
-    for (int k = 0; k < numberOfLayers; k++)
-    {
-        PlacedVolume layerPlaced = HCaloVol.placeVolume(layerVol, k,
-            Position(0., 0., -HCaloDepth / 2. + LayerDepth / 2. + k * LayerDepth));
-        layerPlaced.addPhysVolID("layerid", k);
-    }
 
     /* *********************************************************************
      * HCAL converter
@@ -144,8 +132,14 @@ static Ref_t create_element(Detector& theDetector, xml_h xml_ent, SensitiveDetec
     	Assembly modAssembly { std::format("HCalModAssembly_{}", module_id) };
     	modAssembly.setVisAttributes(theDetector, "HCALDefaultVis");
 
-        auto mr_pos = Position(0.0, 0.0, -0.5 * HCaloModDepth + 0.5 * HCaloDepth);
-        PlacedVolume cModPlaced = modAssembly.placeVolume(HCaloVol, mr_pos);
+    	auto mr_pos = Position(0.0, 0.0, -0.5 * HCaloModDepth + 0.5 * HCaloDepth);
+        for (int k = 0; k < numberOfLayers; k++)
+        {
+            auto dis = Position(0., 0., -HCaloDepth / 2. + LayerDepth / 2. + k * LayerDepth);
+        	PlacedVolume layerPlaced = modAssembly.placeVolume(layerVol, k, mr_pos + dis);
+            layerPlaced.addPhysVolID("layerid", k);
+        }
+
         auto bck_pos = Position(0.0, 0.0, 0.5 * HCaloModDepth - 0.5 * converterDepth);
         PlacedVolume bckPlaced = modAssembly.placeVolume(convVol, bck_pos);
 
