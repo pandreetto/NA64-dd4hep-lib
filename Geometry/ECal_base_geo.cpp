@@ -8,6 +8,7 @@ static Ref_t create_element(Detector& theDetector, xml_h xml_ent, SensitiveDetec
 {
     xml_det_t x_det = xml_ent;
     std::string det_name = x_det.nameStr();
+    int det_id = x_det.id();
     sens_det.setType( "calorimeter" );
 
     const double ECaloWidth = theDetector.constant<double>("ECALWidth");
@@ -139,7 +140,8 @@ static Ref_t create_element(Detector& theDetector, xml_h xml_ent, SensitiveDetec
     }
 
     auto calo_pos = Position(ECaloX, ECaloY, ECaloZ);
-    envelope.placeVolume(detAss, calo_pos);
+    PlacedVolume detPlaced = envelope.placeVolume(detAss, calo_pos);
+    detPlaced.addPhysVolID("system", det_id);
 
     return subdet;
 }
