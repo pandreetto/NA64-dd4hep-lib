@@ -75,6 +75,7 @@ static Ref_t create_element(Detector& theDetector, xml_h xml_ent, SensitiveDetec
     	const double PosX = hModule.attr<double>(_Unicode(posx), 0.0);
     	const double PosY = hModule.attr<double>(_Unicode(posy), 0.0);
     	const double PosZ = hModule.attr<double>(_Unicode(posz), 0.0);
+    	const double RotY = hModule.attr<double>(_Unicode(roty), 0.0);
 
     	Assembly modAssembly { std::format("VHCalModAssembly_{}", module_id) };
     	modAssembly.setVisAttributes(theDetector, "VHCALDefaultVis");
@@ -88,7 +89,9 @@ static Ref_t create_element(Detector& theDetector, xml_h xml_ent, SensitiveDetec
         }
 
         auto mod_pos = Position(PosX, PosY, PosZ);
-    	PlacedVolume modPlaced = envelope.placeVolume(modAssembly, mod_pos);
+        auto mod_rot = RotationZYX(0.0, RotY, 0.0);
+        auto mod_transf = Transform3D(mod_rot, mod_pos);
+    	PlacedVolume modPlaced = envelope.placeVolume(modAssembly, mod_transf);
 		modPlaced.addPhysVolID("system", det_id).addPhysVolID("moduleid", module_id);
 	}
 	return subdet;

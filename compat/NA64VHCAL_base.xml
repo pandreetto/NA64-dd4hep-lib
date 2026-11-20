@@ -26,7 +26,9 @@
             <caloConverter material="Copper" vis="VHCALConverterVis" />
             <caloCounter sensitive="true" material="CaloSc" vis="VHCALCounterVis" />
 
-            <module id="0" posx="0.0*mm" posy="0.0*mm" posz="0.0*mm"/>
+            <!-- 2025 electron mode -->
+            <module id="0" posx="-285.80*mm" posy="0.60*mm" posz="702.76*mm" roty="3.856*mrad"/>
+            <module id="1" posx="-307.43*mm" posy="0.82*mm" posz="2009.43*mm" roty="13.212*mrad"/>
             
         </detector>
     </detectors>
