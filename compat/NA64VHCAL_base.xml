@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='utf-8'?>
+
+<lccdd>
+
+    <define>
+        <constant name="VHCALWidth" value="480.0*mm" />
+        <constant name="VHCALConvDepth" value="25.0*mm" />
+        <constant name="VHCALCountDepth" value="2.0*mm" />
+        <constant name="VHCALGapDepth" value="3.0*mm" />
+        <constant name="VHCALHoleWidth" value="120.0*mm" />
+        <constant name="VHCALHoleHeight" value="60.0*mm" />
+        <constant name="VHCALLayer" value="30" />
+    </define>
+
+    <display>
+        <vis name="VHCALDefaultVis" alpha="1.0" r="0.0" g="0.0" b="0.0" showDaughters="true" visible="false"/>
+        <vis name="VHCALConverterVis" alpha="1.0" r="1.0" g="0.0" b="0.0" showDaughters="true" visible="true"/>
+        <vis name="VHCALCounterVis" alpha="1.0" r="0.0" g="1.0" b="0.0" showDaughters="true" visible="true"/>
+    </display>
+
+    <detectors>
+        <detector id="2" name="NA64VHcal" type="NA64VHCal_base" readout="NA64VHcalReadout">
+            <envelope vis="VHCALDefaultVis">
+                <shape type="Assembly"/>
+            </envelope>
+            <caloConverter material="Copper" vis="VHCALConverterVis" />
+            <caloCounter sensitive="true" material="CaloSc" vis="VHCALCounterVis" />
+
+            <module id="0" posx="0.0*mm" posy="0.0*mm" posz="0.0*mm"/>
+            
+        </detector>
+    </detectors>
+
+    <readouts>
+        <readout name="NA64VHcalReadout">
+            <segmentation type="NoSegmentation" />
+            <id>system:4,moduleid:4,layerid:12,cellid:12</id>
+        </readout>
+    </readouts>
+
+</lccdd>
